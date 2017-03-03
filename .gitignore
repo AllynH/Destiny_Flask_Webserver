@@ -87,3 +87,10 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Destiny stuff - Manifest:
+*.pickle
+*.CONTENT
+
+# Destiny stuff - Certs:
+host-2.*

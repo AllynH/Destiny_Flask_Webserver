@@ -1,0 +1,21 @@
+.emblem-image {
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.image-icon {
+  position: relative;
+  top: 0px;
+  left: 0px;
+}
+.image-background {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.charInv-img{
+	max-width: 50%;
+	max-height: 50%;
+	background-color: red;
+}

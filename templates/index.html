@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}AllynH - Bungie Auth{% endblock %}
+
+{% block page_content %}
+<div>
+	<h2><a href="{{ url }} "					>Authenticate with Bungie</a></h2></br></br>
+	<a href=" {{ url_for('vault') }} "			>View your vault contents.</a></br>
+</div>
+{% endblock %}

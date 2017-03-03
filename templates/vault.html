@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}AllynH - Vault{% endblock %}
+
+{% block page_content %}
+<div>
+	<h2>Welcome to your vault!</h2>
+	<a href=" {{ url_for('index') }} ">Return to login page.</a></br>
+
+	<div class="emblem-image">
+		<img class="image-background" src="https://www.bungie.net/{{ backgroundImage }}">
+		<img class="image-icon" src="https://www.bungie.net/{{ emblemImage }}">
+		<p>Welcome, {{ character }}!</p></br>
+		Your current light level is: {{ lightLevel }} </p>
+	</div>
+
+		
+	
+    <div class="inventory-container">
+        <div class="container">
+            <h2>Vault contents:</h2>
+			<div class="row">
+
+				<h3>Coming soon!</h3>
+
+			</div>
+		</div>
+	</div>
+
+	
+</div>
+{% endblock %}
