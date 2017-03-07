@@ -7,7 +7,6 @@
 # Created by:	Allyn Hunt - www.AllynH.com
 ###################################################################################################
 
-from Header_file import *
 import requests
 import json
 
@@ -150,7 +149,7 @@ def parseVaultHtml(session, vaultResult, all_data):
 		
 	return vault_list
 
-def GetCharacterSummary(session):
+def GetCharacterSummary(session, membershipType, destinyMembershipId):
 	req_string = base_url + membershipType + "/Account/" + destinyMembershipId + "/Character/" + characterId + "/"
 	res = session.get(req_string)
 	print req_string
@@ -192,7 +191,7 @@ def GetCurrentUser(session):
 	return res
 
 def GetCurrentBungieAccount(session):
-	req_string = 'https://www.bungie.net/Platform/User/GetBungieNetUser/'
+	req_string = 'https://www.bungie.net/Platform/User/GetCurrentBungieAccount/'
 	res = session.get(req_string)
 	print req_string
 	error_state = res.json()['ErrorStatus'].decode('utf-8')

@@ -43,14 +43,15 @@ def index():
 
 @app.route('/vault')
 def vault():
-	account = getAccount(oauth_session)
 	userSummary = GetCurrentBungieAccount(oauth_session)
-	charSummary = GetCharacterSummary(oauth_session)
+	session['destinyMembershipId'] 	= str(userSummary.json()['Response']['destinyAccounts'][0]['userInfo']['membershipId'])
+	session['membershipType'] 		= str(userSummary.json()['Response']['destinyAccounts'][0]['userInfo']['membershipType'])
+	session['displayName'] 			= str(userSummary.json()['Response']['destinyAccounts'][0]['userInfo']['displayName'])
 	return render_template('vault.html', 
-							character=userSummary.json()['Response']['user']['displayName'], 
-							lightLevel = charSummary.json()['Response']['data']['characterBase']['stats']['STAT_LIGHT']['value'],
-							emblemImage = account.json()['Response']['data']['characters'][0]['emblemPath'],
-							backgroundImage = account.json()['Response']['data']['characters'][0]['backgroundPath'],
+							character 		= userSummary.json()['Response']['destinyAccounts'][0]['userInfo']['displayName'], 
+							lightLevel 		= userSummary.json()['Response']['destinyAccounts'][0]['characters'][0]['powerLevel'],
+							emblemImage 	= userSummary.json()['Response']['destinyAccounts'][0]['characters'][0]['emblemPath'],
+							backgroundImage	= userSummary.json()['Response']['destinyAccounts'][0]['characters'][0]['backgroundPath'],
 							) 
 
 def make_authorization_url():
