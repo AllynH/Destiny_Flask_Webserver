@@ -47,8 +47,13 @@ def vault():
 	session['destinyMembershipId'] 	= str(userSummary.json()['Response']['destinyAccounts'][0]['userInfo']['membershipId'])
 	session['membershipType'] 		= str(userSummary.json()['Response']['destinyAccounts'][0]['userInfo']['membershipType'])
 	session['displayName'] 			= str(userSummary.json()['Response']['destinyAccounts'][0]['userInfo']['displayName'])
+	vault = getVault(oauth_session, session.get('membershipType'), session.get('destinyMembershipId'))
+	weaponList = parseVault(oauth_session, vault, all_data)
 	return render_template('vault.html', 
+							invItems=invItems,
 							character 		= userSummary.json()['Response']['destinyAccounts'][0]['userInfo']['displayName'], 
+							weaponList=weaponList, 
+							charId 			= userSummary.json()['Response']['destinyAccounts'][0]['characters'][0]['characterId'],
 							lightLevel 		= userSummary.json()['Response']['destinyAccounts'][0]['characters'][0]['powerLevel'],
 							emblemImage 	= userSummary.json()['Response']['destinyAccounts'][0]['characters'][0]['emblemPath'],
 							backgroundImage	= userSummary.json()['Response']['destinyAccounts'][0]['characters'][0]['backgroundPath'],

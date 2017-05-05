@@ -1,0 +1,11 @@
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block page_content %}
+<div class="col-md-3 col-sm-4 col-xs-6">
+	<div class="thumbnail">
+		<img class="img-responsive med-tile" src="{{ dict_item['icon'] }}" title="{{ dict_item['itemName'] }}" tierTypeName="{{ dict_item['tierTypeName'] }}" itemTypeName="{{ dict_item['itemTypeName'] }}" tier="{{ dict_item['tier'] }}" bucket="{{ dict_item['bucket'] }}" itemLightLevel="{{ dict_item['itemLightLevel'] }}" itemReferenceHash="{{ dict_item['itemReferenceHash'] }}">
+		<p>{{ dict_item['itemName'] }}: {{ dict_item['itemLightLevel'] }}</p>
+		<p>{{ dict_item['tierTypeName'] }} {{ dict_item['itemTypeName'] }}</p>
+	</div>
+</div>
+{% endblock %}

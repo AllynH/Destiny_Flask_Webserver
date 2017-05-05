@@ -20,14 +20,23 @@
     <div class="inventory-container">
         <div class="container">
             <h2>Vault contents:</h2>
-			<div class="row">
-
-				<h3>Coming soon!</h3>
 
 			</div>
 		</div>
-	</div>
 
+{% for item in invItems -%}
+<div class="inventory-container">
+	<div class="container">
+	<h2>{{ invItems[item] }}:</h2>
+	{% for dict_item in weaponList -%}
 	
+		{% if invItems[item] in dict_item['bucket'] -%}
+			{% include 'itemBlock.html' -%}
+		{% endif -%}
+
+	{% endfor -%}	
+	</div>
 </div>
+{% endfor -%}
+		
 {% endblock %}

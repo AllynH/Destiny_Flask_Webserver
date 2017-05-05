@@ -10,6 +10,34 @@
 import requests
 import json
 
+# URL Builder:
+base_url = "https://www.bungie.net/platform/Destiny/"
+# Vault size:
+vaultArmour = 108
+vaultWeapons = 108
+vaultInventory = 72
+vaultSize = vaultArmour + vaultWeapons + vaultInventory
+
+invItems = {
+#			0 : 'Lost Items', 
+			1 : 'Primary Weapons', 
+			2 : 'Special Weapons', 
+			3 : 'Heavy Weapons', 
+			4 : 'Ghost', 
+			5 : 'Helmet', 
+			6 : 'Gauntlets', 
+			7 : 'Chest Armor', 
+			8 : 'Leg Armor', 
+			9 : 'Class Armor', 
+			10 : 'Artifacts', 
+			11 : 'Vehicle', 
+			12 : 'Sparrow Horn', 
+			13 : 'Ships',
+			14 : 'Shaders',
+			15 : 'Emblems',
+			16 : 'Emotes',
+			17 : 'Weapon Bundles',
+			}
 # Uncomment this line to print JSON output to a file:
 #f = open('inventoryItem.txt', 'w')
 
@@ -30,7 +58,7 @@ def equipItem(payload, session):
 	print "Error status: " + error_stat + "\n"
 	return res
 
-def getVault(session):
+def getVault(session, membershipType, destinyMembershipId):
 	getVault_url = base_url + membershipType + "/MyAccount/Vault/"
 	res = session.get(getVault_url, params={'accountId': destinyMembershipId})
 	print (res.url)
@@ -41,16 +69,16 @@ def getVault(session):
 	return res
 
 	
-def getCharacterInventory(session, charId):
-	req_string = base_url + membershipType + "/Account/" + destinyMembershipId + "/Character/" + charId + "/Inventory/"
+def getCharacterInventory(session, characterId):
+	req_string = base_url + membershipType + "/Account/" + destinyMembershipId + "/Character/" + characterId + "/Inventory/"
 	print "Fetching data for: " + req_string + "\n"
 	res = session.get(req_string)
 	error_stat = res.json()['ErrorStatus']
 	print "Error status: " + error_stat + "\n"
 	return res
 
-def getCharacterInventorySummary(session, charId):
-	req_string = base_url + membershipType + "/Account/" + destinyMembershipId + "/Character/" + charId + "/Inventory/Summary/"
+def getCharacterInventorySummary(session, membershipType, destinyMembershipId, characterId):
+	req_string = base_url + membershipType + "/Account/" + destinyMembershipId + "/Character/" + characterId + "/Inventory/Summary/"
 	print "Fetching data for: " + req_string + "\n"
 	res = session.get(req_string)
 	error_stat = res.json()['ErrorStatus']
@@ -89,37 +117,39 @@ def parsegetCharacterInventorySummary(session, charInventorySummary, all_data):
 def parseVault(session, vaultResult, all_data):
 	array_size = 0
 	weapon_list = [{
-		"membershipType": 2,
 		"itemReferenceHash": 0,
 		"itemId": 0,
-		"characterId": characterId_Warlock,
+		'itemName': '',
+		'tierTypeName': '',
+		'itemTypeName': '',
 		"stackSize": 1,
-		"transferToVault": False
+		'icon': '',
+		'bucket': '',
+		'equipped': '',
 	} for array_size in range(vaultSize)]
 	array_size = 0
 
 	for bucket in vaultResult.json()['Response']['data']['buckets']:
-	#f.write (json.dumps(bucket['items'], indent=4))
 		for item in bucket['items']:
-			#print "Item location: " + item['location']
-			#print item['itemInstanceId']
-			hashReqString = base_url + "Manifest/6/" + str(item['itemHash'])
-			#res2 = requests.get(hashReqString, headers=HEADERS)
-			#myItem = item['itemHash']
 			weapon_list[array_size]['itemReferenceHash'] = item['itemHash']
-			weapon_list[array_size]['itemId'] = item['itemInstanceId']
-			#print weapon_list[array_size]['itemReferenceHash']
-			#print weapon_list[array_size]['itemId']
 			inventoryItem = all_data['DestinyInventoryItemDefinition'][item['itemHash']]
-			item_name = inventoryItem['itemName']
-			item_tier = inventoryItem['tierTypeName']
-			item_type = inventoryItem['itemTypeName']
-			item_icon = inventoryItem['icon']
-			print "Item name is: " + item_name
-			#print "Item type is: " + item_tier + " " + item_type
-			#print "Item icon is: http://www.bungie.net" + item_icon
-			#print array_size
-			array_size += 1
+			weapon_list[array_size]['itemName'] = inventoryItem['itemName']
+			if ((inventoryItem['itemName'] != "Classified") and (inventoryItem['itemHash'] != 1826822442)):
+				# Equipped item or Subclass:
+				if ((item['transferStatus'] == 3) or (item['transferStatus'] == 1)):
+					weapon_list[array_size]['equipped'] = True
+				bucketHash = all_data['DestinyInventoryBucketDefinition'][inventoryItem['bucketTypeHash']]
+				weapon_list[array_size]['itemName'] = inventoryItem['itemName']
+				weapon_list[array_size]['tierTypeName'] = inventoryItem['tierTypeName']
+				weapon_list[array_size]['itemTypeName'] = inventoryItem['itemTypeName']
+				weapon_list[array_size]['icon'] = "https://www.bungie.net/" + inventoryItem['icon']
+				weapon_list[array_size]['bucket'] = bucketHash['bucketName']
+			if ((inventoryItem['itemName'] == "Classified") or (inventoryItem['itemHash'] == 1826822442)):# or (inventoryItem['bucketTypeHash'] == 0)):
+				weapon_list[array_size]['itemName'] = inventoryItem['itemName']
+				weapon_list[array_size]['tierTypeName'] = "Classified"
+				weapon_list[array_size]['itemTypeName'] = "Classified"
+				weapon_list[array_size]['bucket'] = "Classified"
+			array_size += 1		
 		
 	return weapon_list
 
@@ -165,7 +195,7 @@ def GetCurrentBungieUser(session):
 	print "Error status: " + error_state + "\n"
 	return res
 	
-def GetAdvisorsForCharacter(session):
+def GetAdvisorsForCharacter(session, membershipType, destinyMembershipId, characterId):
 	req_string = base_url + membershipType + "/Account/" + destinyMembershipId + "/Character/" + characterId + "/Advisors/"
 	res = session.get(req_string)
 	print req_string
@@ -173,7 +203,7 @@ def GetAdvisorsForCharacter(session):
 	print "Error status: " + error_state + "\n"
 	return res
 		
-def getAccount(session):
+def getAccount(session, membershipType, destinyMembershipId):
 	req_string = base_url + membershipType + "/Account/" + destinyMembershipId + "/"
 	res = session.get(req_string)
 	print req_string
